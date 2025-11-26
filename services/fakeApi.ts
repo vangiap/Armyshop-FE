@@ -1,7 +1,7 @@
 
-import { Product } from '../types';
+import { Product, BlogPost, Collection } from '../types';
 
-// Mock Data
+// Mock Data Products
 const PRODUCTS: Product[] = [
   {
     id: 1,
@@ -103,6 +103,65 @@ const PRODUCTS: Product[] = [
   },
 ];
 
+// Mock Data Blogs
+const BLOG_POSTS: BlogPost[] = [
+  {
+    id: 1,
+    title: "Xu hướng thời trang Thu Đông 2024",
+    excerpt: "Khám phá những phong cách thời trang sẽ lên ngôi trong mùa thu đông năm nay với các gam màu ấm áp.",
+    content: "<p>Năm 2024 đánh dấu sự trở lại của phong cách tối giản (Minimalism) kết hợp với các gam màu trung tính...</p>",
+    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80",
+    author: "Minh Anh",
+    date: "10/05/2024",
+    category: "Thời trang"
+  },
+  {
+    id: 2,
+    title: "Cách chọn laptop phù hợp cho sinh viên",
+    excerpt: "Hướng dẫn chi tiết cách lựa chọn cấu hình laptop vừa túi tiền nhưng vẫn đáp ứng tốt nhu cầu học tập.",
+    content: "<p>Khi lựa chọn laptop cho sinh viên, yếu tố quan trọng nhất là sự cân bằng giữa hiệu năng và tính di động...</p>",
+    image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=800&q=80",
+    author: "Tuấn Hưng",
+    date: "12/05/2024",
+    category: "Công nghệ"
+  },
+  {
+    id: 3,
+    title: "5 món phụ kiện không thể thiếu",
+    excerpt: "Nâng tầm phong cách cá nhân chỉ với những món phụ kiện nhỏ xinh nhưng vô cùng 'có võ'.",
+    content: "<p>Phụ kiện đóng vai trò quan trọng trong việc hoàn thiện outfit của bạn...</p>",
+    image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=80",
+    author: "Lan Ngọc",
+    date: "15/05/2024",
+    category: "Phong cách sống"
+  }
+];
+
+// Mock Collections
+const COLLECTIONS: Collection[] = [
+  {
+    id: 1,
+    title: "Summer Vibes",
+    subtitle: "Bộ sưu tập mùa hè",
+    image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=800&q=80",
+    link: "/products?category=thoi-trang-nam"
+  },
+  {
+    id: 2,
+    title: "Office Chic",
+    subtitle: "Thời trang công sở",
+    image: "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?auto=format&fit=crop&w=800&q=80",
+    link: "/products?category=thoi-trang-nu"
+  },
+  {
+    id: 3,
+    title: "Tech Lovers",
+    subtitle: "Đồ chơi công nghệ",
+    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80",
+    link: "/products?category=dien-tu"
+  }
+];
+
 // Simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -126,5 +185,20 @@ export const api = {
   getRelatedProducts: async (category: string, currentId: number): Promise<Product[]> => {
     await delay(400);
     return PRODUCTS.filter(p => p.category === category && p.id !== currentId).slice(0, 4);
+  },
+
+  getBlogPosts: async (): Promise<BlogPost[]> => {
+    await delay(600);
+    return BLOG_POSTS;
+  },
+
+  getBlogPostById: async (id: number): Promise<BlogPost | undefined> => {
+    await delay(400);
+    return BLOG_POSTS.find(p => p.id === id);
+  },
+
+  getCollections: async (): Promise<Collection[]> => {
+    await delay(500);
+    return COLLECTIONS;
   }
 };

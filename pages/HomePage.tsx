@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Product } from '../types';
@@ -8,6 +9,9 @@ import ServiceFeatures from '../components/home/ServiceFeatures';
 import CategoryHighlights from '../components/home/CategoryHighlights';
 import PromoBanner from '../components/home/PromoBanner';
 import NewsletterSection from '../components/home/NewsletterSection';
+import HeroSlider from '../components/home/HeroSlider';
+import FeaturedCollections from '../components/home/FeaturedCollections'; // Import
+import LatestNews from '../components/home/LatestNews'; // Import
 import { useShop } from '../context/ShopContext';
 
 const HomePage: React.FC = () => {
@@ -65,36 +69,14 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="pb-0 bg-white">
-      {/* Hero Banner */}
-      <div className="bg-gradient-to-r from-emerald-800 to-primary text-white py-20 md:py-28 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] opacity-20 bg-cover bg-center mix-blend-overlay"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center md:text-left">
-          <span className="inline-block py-1 px-3 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-sm font-medium mb-6 animate-fade-in-up">
-            🎉 Chào mừng bạn đến với VietShop
-          </span>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight drop-shadow-md">
-            Phong Cách Sống <br/>
-            <span className="text-emerald-300">Hiện Đại & Tinh Tế</span>
-          </h1>
-          <p className="text-lg md:text-xl text-emerald-50 max-w-xl mb-10 leading-relaxed md:mx-0 mx-auto">
-            Khám phá bộ sưu tập mới nhất với chất lượng đỉnh cao. Giao hàng toàn quốc, đổi trả miễn phí trong 7 ngày.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-             <button 
-                onClick={() => productSectionRef.current?.scrollIntoView({behavior: 'smooth'})}
-                className="bg-white text-emerald-800 px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition-all shadow-lg transform hover:-translate-y-1"
-             >
-               Mua Sắm Ngay
-             </button>
-             <button className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold hover:bg-white/10 transition-all">
-               Tìm Hiểu Thêm
-             </button>
-          </div>
-        </div>
-      </div>
-
+      <HeroSlider />
+      
       <ServiceFeatures />
+      
+      <FeaturedCollections /> {/* New Section */}
+
       <CategoryHighlights onSelectCategory={handleCategorySelect} />
+      
       <PromoBanner />
 
       {/* Main Products Section */}
@@ -179,6 +161,7 @@ const HomePage: React.FC = () => {
         )}
       </div>
 
+      <LatestNews /> {/* New Section */}
       <NewsletterSection />
     </div>
   );

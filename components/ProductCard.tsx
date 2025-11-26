@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Star } from 'lucide-react';
+import { ShoppingBag, Star } from 'lucide-react';
 import { Product } from '../types';
 
 interface ProductCardProps {
@@ -11,6 +11,11 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onClick }) => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+  };
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onAddToCart(product);
   };
 
   return (
@@ -35,30 +40,31 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onClick
         </div>
         
         <h3 
-          className="text-gray-900 font-semibold text-lg leading-tight mb-2 cursor-pointer hover:text-primary line-clamp-2"
+          className="text-gray-900 font-semibold text-base leading-tight mb-2 cursor-pointer hover:text-primary line-clamp-2 min-h-[2.5rem]"
           onClick={() => onClick(product.id)}
         >
           {product.title}
         </h3>
         
-        <div className="flex items-center mb-4">
-          <Star className="h-4 w-4 text-yellow-400 fill-current" />
+        <div className="flex items-center mb-3">
+          <Star className="h-3.5 w-3.5 text-yellow-400 fill-current" />
           <span className="ml-1 text-sm text-gray-600 font-medium">{product.rating.rate}</span>
           <span className="mx-1 text-gray-300">|</span>
-          <span className="text-sm text-gray-500">{product.rating.count} đánh giá</span>
+          <span className="text-xs text-gray-500">{product.rating.count} đánh giá</span>
         </div>
 
-        <div className="mt-auto flex items-center justify-between">
-          <div>
-            <p className="text-xl font-bold text-gray-900">{formatCurrency(product.price)}</p>
-            <p className="text-sm text-gray-400 line-through">{formatCurrency(product.price * 1.2)}</p>
+        <div className="mt-auto">
+          <div className="flex items-baseline mb-3">
+             <p className="text-lg font-bold text-gray-900 mr-2">{formatCurrency(product.price)}</p>
+             <p className="text-xs text-gray-400 line-through">{formatCurrency(product.price * 1.2)}</p>
           </div>
+          
           <button
-            onClick={() => onAddToCart(product)}
-            className="p-2 rounded-full bg-gray-100 text-gray-900 hover:bg-primary hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-            aria-label="Thêm vào giỏ"
+            onClick={handleBuyNow}
+            className="w-full py-2 bg-gray-50 text-gray-900 font-semibold text-sm rounded-lg hover:bg-primary hover:text-white transition-all duration-200 flex items-center justify-center gap-2 group/btn"
           >
-            <Plus className="h-6 w-6" />
+            <ShoppingBag className="w-4 h-4" />
+            Mua ngay
           </button>
         </div>
       </div>

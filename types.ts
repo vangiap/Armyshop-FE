@@ -35,3 +35,22 @@ export interface FilterState {
   sort: 'asc' | 'desc' | 'default';
   search: string;
 }
+
+export interface BlogPost {
+  id: number;
+  title: string;
+  excerpt: string;
+  content: string; // HTML or Markdown content
+  image: string;
+  author: string;
+  date: string;
+  category: string;
+}
+
+export interface Collection {
+  id: number;
+  title: string;
+  subtitle: string;
+  image: string;
+  link: string;
+}

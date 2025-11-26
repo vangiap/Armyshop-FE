@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CreditCard, Truck, CheckCircle, MapPin, User, Phone } from 'lucide-react';
+import { ArrowLeft, CreditCard, Truck, CheckCircle, MapPin, User, Phone, AlertCircle, Smartphone } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 
 const CheckoutPage: React.FC = () => {
@@ -13,7 +13,9 @@ const CheckoutPage: React.FC = () => {
     email: '',
     note: ''
   });
+  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'banking'>('cod');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingFee = subtotal > 1000000 ? 0 : 30000;
@@ -26,26 +28,51 @@ const CheckoutPage: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user types
+    if (errors[name]) {
+        setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const validateForm = () => {
+      const newErrors: {[key: string]: string} = {};
+      if (!formData.name.trim()) newErrors.name = "Vui lòng nhập họ tên";
+      if (!formData.phone.trim()) newErrors.phone = "Vui lòng nhập số điện thoại";
+      else if (!/^\d{10,11}$/.test(formData.phone)) newErrors.phone = "Số điện thoại không hợp lệ";
+      
+      if (!formData.address.trim()) newErrors.address = "Vui lòng nhập địa chỉ nhận hàng";
+      
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+        const firstErrorField = document.querySelector('[aria-invalid="true"]');
+        if (firstErrorField) (firstErrorField as HTMLElement).focus();
+        return;
+    }
+
     setTimeout(() => {
       setIsSuccess(true);
       clearCart();
-    }, 1000);
+    }, 1500);
   };
 
   if (isSuccess) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-        <div className="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100">
+        <div className="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 animate-bounce-in">
           <CheckCircle className="h-10 w-10 text-green-600" />
         </div>
         <h2 className="text-3xl font-bold text-gray-900 mb-4">Đặt hàng thành công!</h2>
         <p className="text-gray-600 mb-8">
           Cảm ơn bạn đã mua sắm tại VietShop. Mã đơn hàng của bạn là <span className="font-mono font-bold text-gray-900">#VN{Math.floor(Math.random() * 10000)}</span>.
-          Chúng tôi sẽ liên hệ với bạn sớm để xác nhận đơn hàng.
+          {paymentMethod === 'banking' 
+            ? " Chúng tôi sẽ kiểm tra giao dịch và liên hệ xác nhận sớm nhất." 
+            : " Chúng tôi sẽ liên hệ với bạn sớm để xác nhận đơn hàng."}
         </p>
         <button
           onClick={() => navigate('/')}
@@ -93,10 +120,12 @@ const CheckoutPage: React.FC = () => {
               Thông tin giao hàng
             </h2>
             
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Họ và tên</label>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                      Họ và tên <span className="text-red-500">*</span>
+                  </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <User className="h-4 w-4 text-gray-400" />
@@ -105,16 +134,19 @@ const CheckoutPage: React.FC = () => {
                       type="text"
                       id="name"
                       name="name"
-                      required
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="block w-full pl-10 border-gray-300 rounded-lg focus:ring-primary focus:border-primary sm:text-sm py-2.5 border"
+                      className={`block w-full pl-10 border rounded-lg focus:ring-primary focus:border-primary sm:text-sm py-2.5 ${errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                       placeholder="Nguyễn Văn A"
+                      aria-invalid={!!errors.name}
                     />
                   </div>
+                  {errors.name && <p className="mt-1 text-xs text-red-500 flex items-center"><AlertCircle className="w-3 h-3 mr-1"/>{errors.name}</p>}
                 </div>
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                      Số điện thoại <span className="text-red-500">*</span>
+                  </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Phone className="h-4 w-4 text-gray-400" />
@@ -123,13 +155,14 @@ const CheckoutPage: React.FC = () => {
                       type="tel"
                       id="phone"
                       name="phone"
-                      required
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="block w-full pl-10 border-gray-300 rounded-lg focus:ring-primary focus:border-primary sm:text-sm py-2.5 border"
+                      className={`block w-full pl-10 border rounded-lg focus:ring-primary focus:border-primary sm:text-sm py-2.5 ${errors.phone ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                       placeholder="0912 xxx xxx"
+                      aria-invalid={!!errors.phone}
                     />
                   </div>
+                  {errors.phone && <p className="mt-1 text-xs text-red-500 flex items-center"><AlertCircle className="w-3 h-3 mr-1"/>{errors.phone}</p>}
                 </div>
               </div>
 
@@ -147,17 +180,20 @@ const CheckoutPage: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">Địa chỉ nhận hàng</label>
+                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                    Địa chỉ nhận hàng <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   id="address"
                   name="address"
-                  required
                   value={formData.address}
                   onChange={handleInputChange}
-                  className="block w-full border-gray-300 rounded-lg focus:ring-primary focus:border-primary sm:text-sm py-2.5 px-3 border"
+                  className={`block w-full border rounded-lg focus:ring-primary focus:border-primary sm:text-sm py-2.5 px-3 ${errors.address ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                   placeholder="Số nhà, đường, phường/xã..."
+                  aria-invalid={!!errors.address}
                 />
+                 {errors.address && <p className="mt-1 text-xs text-red-500 flex items-center"><AlertCircle className="w-3 h-3 mr-1"/>{errors.address}</p>}
               </div>
 
               <div>
@@ -180,30 +216,64 @@ const CheckoutPage: React.FC = () => {
             </h2>
             
             <div className="space-y-3">
-              <div className="flex items-center p-4 border border-primary bg-green-50 rounded-lg cursor-pointer">
+              <div 
+                className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all ${paymentMethod === 'cod' ? 'border-primary bg-green-50' : 'border-gray-200'}`}
+                onClick={() => setPaymentMethod('cod')}
+              >
                 <input 
                   id="cod" 
                   name="paymentMethod" 
                   type="radio" 
-                  defaultChecked 
+                  checked={paymentMethod === 'cod'}
+                  onChange={() => setPaymentMethod('cod')}
                   className="focus:ring-primary h-4 w-4 text-primary border-gray-300" 
                 />
-                <label htmlFor="cod" className="ml-3 block text-sm font-medium text-gray-900">
+                <label htmlFor="cod" className="ml-3 block text-sm font-medium text-gray-900 cursor-pointer flex-1">
                   Thanh toán khi nhận hàng (COD)
                 </label>
                 <Truck className="ml-auto h-5 w-5 text-gray-500" />
               </div>
-              <div className="flex items-center p-4 border border-gray-200 rounded-lg opacity-60 cursor-not-allowed">
-                <input 
-                  id="banking" 
-                  name="paymentMethod" 
-                  type="radio" 
-                  disabled 
-                  className="focus:ring-primary h-4 w-4 text-primary border-gray-300" 
-                />
-                <label htmlFor="banking" className="ml-3 block text-sm font-medium text-gray-500">
-                  Chuyển khoản ngân hàng (Đang bảo trì)
-                </label>
+
+              <div 
+                className={`flex flex-col p-4 border rounded-lg cursor-pointer transition-all ${paymentMethod === 'banking' ? 'border-primary bg-green-50' : 'border-gray-200'}`}
+                onClick={() => setPaymentMethod('banking')}
+              >
+                <div className="flex items-center w-full">
+                    <input 
+                    id="banking" 
+                    name="paymentMethod" 
+                    type="radio" 
+                    checked={paymentMethod === 'banking'}
+                    onChange={() => setPaymentMethod('banking')}
+                    className="focus:ring-primary h-4 w-4 text-primary border-gray-300" 
+                    />
+                    <label htmlFor="banking" className="ml-3 block text-sm font-medium text-gray-900 cursor-pointer flex-1">
+                    Chuyển khoản ngân hàng (QR Code)
+                    </label>
+                    <Smartphone className="ml-auto h-5 w-5 text-gray-500" />
+                </div>
+                
+                {/* QR Section displays when selected */}
+                {paymentMethod === 'banking' && (
+                    <div className="mt-4 pl-7 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="p-4 bg-white rounded-lg border border-gray-200 text-center">
+                            <p className="text-sm text-gray-600 mb-2">Quét mã QR để thanh toán nhanh:</p>
+                            <div className="inline-block p-2 bg-white rounded shadow-sm border border-gray-100">
+                                {/* Using a placeholder QR service for demo */}
+                                <img 
+                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=VIETSHOP_ORDER_${total}`} 
+                                    alt="Payment QR Code" 
+                                    className="w-32 h-32 md:w-40 md:h-40 mx-auto"
+                                />
+                            </div>
+                            <div className="mt-3 text-sm">
+                                <p className="font-bold text-gray-800">VIETCOMBANK</p>
+                                <p className="font-mono text-gray-600">1900 888 888</p>
+                                <p className="text-xs text-gray-500 mt-1">Nội dung: <span className="font-bold text-primary">MUA HANG SDT {formData.phone || '...'}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                )}
               </div>
             </div>
           </form>
@@ -214,7 +284,7 @@ const CheckoutPage: React.FC = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
             <h2 className="text-lg font-semibold text-gray-900 mb-6">Đơn hàng của bạn</h2>
             
-            <ul className="divide-y divide-gray-200 mb-6 max-h-96 overflow-y-auto pr-2">
+            <ul className="divide-y divide-gray-200 mb-6 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
               {cartItems.map((item, idx) => (
                 <li key={`${item.id}-${idx}`} className="py-4 flex">
                   <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
@@ -258,7 +328,7 @@ const CheckoutPage: React.FC = () => {
               onClick={handleSubmit}
               className="w-full mt-6 bg-primary border border-transparent rounded-lg shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all"
             >
-              Đặt hàng ({formatCurrency(total)})
+              {paymentMethod === 'banking' ? 'Tôi đã chuyển khoản' : `Đặt hàng (${formatCurrency(total)})`}
             </button>
           </div>
         </div>

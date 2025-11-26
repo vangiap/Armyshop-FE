@@ -1,25 +1,45 @@
-import React, { useState } from 'react';
-import { ShoppingCart, Search, Menu, Store, X } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+
+import React, { useState, useEffect } from 'react';
+import { ShoppingCart, Search, Menu, Store, X, ChevronDown, ChevronRight } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
+import { api } from '../services/fakeApi';
 
 const Navbar: React.FC = () => {
   const { cartItems, toggleCart, setSearchQuery } = useShop();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [isProductDropdownOpen, setIsProductDropdownOpen] = useState(false); // For mobile
+  
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const navLinks = [
-    { name: 'Trang chủ', path: '/' },
-    { name: 'Sản phẩm', path: '/' },
-    { name: 'Giới thiệu', path: '#' },
-    { name: 'Liên hệ', path: '#' },
-  ];
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const cats = await api.getCategories();
+        setCategories(cats);
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+      if (path === '/' && location.pathname !== '/') return false;
+      if (path === '/blog' && location.pathname.startsWith('/blog')) return true;
+      return location.pathname === path;
+  };
+
+  const handleCategoryClick = (cat: string) => {
+      setIsMenuOpen(false);
+      navigate(`/products?category=${cat}`);
+  };
 
   return (
-    <nav className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
+    <nav className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -29,18 +49,74 @@ const Navbar: React.FC = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
+          <div className="hidden md:flex space-x-8 items-center h-full">
+            <Link
+                to="/"
                 className={`text-sm font-medium transition-colors hover:text-primary ${
-                  isActive(link.path) && link.path !== '#' ? 'text-primary' : 'text-gray-700'
+                  isActive('/') ? 'text-primary' : 'text-gray-700'
                 }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+            >
+                Trang chủ
+            </Link>
+
+            {/* Product Dropdown */}
+            <div className="relative group h-full flex items-center">
+                <Link
+                    to="/products"
+                    className={`flex items-center text-sm font-medium transition-colors hover:text-primary ${
+                    isActive('/products') ? 'text-primary' : 'text-gray-700'
+                    }`}
+                >
+                    Sản phẩm <ChevronDown className="w-4 h-4 ml-1" />
+                </Link>
+                
+                {/* Mega Menu / Dropdown */}
+                <div className="absolute top-full left-0 w-56 bg-white border border-gray-100 shadow-lg rounded-b-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
+                    <div className="py-2">
+                        <Link 
+                            to="/products" 
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary font-medium border-b border-gray-50"
+                        >
+                            Tất cả sản phẩm
+                        </Link>
+                        {categories.map((cat) => (
+                            <Link
+                                key={cat}
+                                to={`/products?category=${cat}`}
+                                className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary capitalize"
+                            >
+                                {cat.replace(/-/g, ' ')}
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+             <Link
+                to="/blog"
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  isActive('/blog') ? 'text-primary' : 'text-gray-700'
+                }`}
+            >
+                Tin tức
+            </Link>
+
+            <Link
+                to="/about"
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  isActive('/about') ? 'text-primary' : 'text-gray-700'
+                }`}
+            >
+                Giới thiệu
+            </Link>
+            <Link
+                to="/contact"
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  isActive('/contact') ? 'text-primary' : 'text-gray-700'
+                }`}
+            >
+                Liên hệ
+            </Link>
           </div>
 
           {/* Search Bar */}
@@ -84,7 +160,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 absolute w-full left-0 z-50 shadow-lg">
+        <div className="md:hidden bg-white border-t border-gray-100 absolute w-full left-0 z-50 shadow-lg max-h-[90vh] overflow-y-auto">
           <div className="px-4 pt-2 pb-4 space-y-1">
              {/* Mobile Search */}
              <div className="mb-4 mt-2 relative">
@@ -98,16 +174,69 @@ const Navbar: React.FC = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
             </div>
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
+            
+            <Link
+                to="/"
                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                 onClick={() => setIsMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
+            >
+                Trang chủ
+            </Link>
+
+            {/* Mobile Product Accordion */}
+            <div>
+                <button 
+                    onClick={() => setIsProductDropdownOpen(!isProductDropdownOpen)}
+                    className="w-full flex justify-between items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                >
+                    Sản phẩm
+                    <ChevronDown className={`w-4 h-4 transition-transform ${isProductDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {isProductDropdownOpen && (
+                    <div className="pl-4 space-y-1 bg-gray-50 rounded-lg mt-1 mb-2 py-2">
+                        <Link
+                            to="/products"
+                            className="block px-3 py-2 text-sm text-gray-600 hover:text-primary"
+                            onClick={() => setIsMenuOpen(false)}
+                        >
+                            Tất cả sản phẩm
+                        </Link>
+                        {categories.map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() => handleCategoryClick(cat)}
+                                className="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-primary capitalize"
+                            >
+                                {cat.replace(/-/g, ' ')}
+                            </button>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            <Link
+                to="/blog"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                onClick={() => setIsMenuOpen(false)}
+            >
+                Tin tức
+            </Link>
+
+            <Link
+                to="/about"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                onClick={() => setIsMenuOpen(false)}
+            >
+                Giới thiệu
+            </Link>
+            <Link
+                to="/contact"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                onClick={() => setIsMenuOpen(false)}
+            >
+                Liên hệ
+            </Link>
           </div>
         </div>
       )}
