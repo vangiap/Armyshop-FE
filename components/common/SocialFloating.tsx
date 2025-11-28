@@ -1,5 +1,5 @@
 import React from 'react';
-import { Facebook, MessageCircle, Video } from 'lucide-react';
+import { Facebook, Video } from 'lucide-react';
 
 const SocialFloating: React.FC = () => {
   return (

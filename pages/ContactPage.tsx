@@ -1,6 +1,6 @@
 import React from 'react';
 import Breadcrumbs from '../components/common/Breadcrumbs';
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { MapPin, Phone, Mail } from 'lucide-react';
 
 const ContactPage: React.FC = () => {
   return (

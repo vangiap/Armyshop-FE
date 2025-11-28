@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Search, Menu, Store, X, ChevronDown, ChevronRight } from 'lucide-react';
+import { ShoppingCart, Search, Menu, Store, X, ChevronDown } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { api } from '../services/fakeApi';

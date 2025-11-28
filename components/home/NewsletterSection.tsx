@@ -1,4 +1,3 @@
-import React from 'react';
 import { Mail, ArrowRight } from 'lucide-react';
 
 const NewsletterSection = () => (

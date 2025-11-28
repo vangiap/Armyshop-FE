@@ -1,4 +1,3 @@
-import React from 'react';
 import { Truck, RefreshCw, ShieldCheck, Headphones } from 'lucide-react';
 
 const ServiceFeatures = () => {

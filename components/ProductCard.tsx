@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ShoppingBag, Star } from 'lucide-react';
 import { Product } from '../types';
@@ -9,7 +8,7 @@ interface ProductCardProps {
   onClick: (id: number) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onClick }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
   };
