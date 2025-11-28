@@ -54,3 +54,20 @@ export interface Collection {
   image: string;
   link: string;
 }
+
+// New Types for Admin
+export interface Order {
+  id: string;
+  customerName: string;
+  date: string;
+  total: number;
+  status: 'pending' | 'shipping' | 'completed' | 'cancelled';
+  items: number; // Count of items
+}
+
+export interface DashboardStats {
+  totalRevenue: number;
+  totalOrders: number;
+  totalProducts: number;
+  recentOrders: Order[];
+}

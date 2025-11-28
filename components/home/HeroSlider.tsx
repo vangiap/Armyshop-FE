@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -8,7 +9,6 @@ const slides = [
     title: "Phong Cách Sống Hiện Đại",
     subtitle: "Khám phá bộ sưu tập thời trang nam mới nhất",
     cta: "Mua Sắm Ngay",
-    position: "center"
   },
   {
     id: 2,
@@ -16,7 +16,6 @@ const slides = [
     title: "Công Nghệ Đỉnh Cao",
     subtitle: "Nâng tầm trải nghiệm với các thiết bị điện tử mới",
     cta: "Xem Chi Tiết",
-    position: "left"
   },
   {
     id: 3,
@@ -24,7 +23,6 @@ const slides = [
     title: "Trang Sức Tinh Tế",
     subtitle: "Quà tặng hoàn hảo cho người thương yêu",
     cta: "Khám Phá",
-    position: "right"
   }
 ];
 
@@ -61,25 +59,21 @@ const HeroSlider: React.FC = () => {
             <div className="absolute inset-0 bg-black/40"></div>
           </div>
 
-          {/* Content */}
+          {/* Content - Fixed Center */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className={`max-w-7xl w-full px-4 sm:px-6 lg:px-8 flex ${
-                slide.position === 'left' ? 'justify-start' : 
-                slide.position === 'right' ? 'justify-end' : 'justify-center text-center'
-            }`}>
-              <div className={`max-w-xl text-white ${
-                  index === currentSlide ? 'animate-fade-in-up' : ''
-              }`}>
+            <div className="max-w-7xl w-full px-4 sm:px-6 lg:px-8 flex justify-center text-center">
+              <div className="max-w-3xl text-white">
                 <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-sm font-medium mb-4">
                   🔥 Bộ sưu tập mới 2024
                 </span>
+                {/* Removed animate-fade-in-up to stop jumping */}
                 <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight shadow-sm">
                   {slide.title}
                 </h1>
                 <p className="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
                   {slide.subtitle}
                 </p>
-                <div className={`flex gap-4 ${slide.position === 'center' ? 'justify-center' : ''}`}>
+                <div className="flex gap-4 justify-center">
                     <button 
                         onClick={() => document.getElementById('products-section')?.scrollIntoView({behavior: 'smooth'})}
                         className="bg-primary hover:bg-emerald-700 text-white px-8 py-3 rounded-full font-bold transition-all shadow-lg transform hover:-translate-y-1"

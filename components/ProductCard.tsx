@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ShoppingBag, Star } from 'lucide-react';
 import { Product } from '../types';
@@ -15,7 +16,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onClick
 
   const handleBuyNow = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onAddToCart(product);
+    // Thay đổi logic: Chuyển hướng đến trang chi tiết thay vì thêm vào giỏ ngay
+    onClick(product.id);
   };
 
   return (
@@ -61,7 +63,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onClick
           
           <button
             onClick={handleBuyNow}
-            className="w-full py-2 bg-gray-50 text-gray-900 font-semibold text-sm rounded-lg hover:bg-primary hover:text-white transition-all duration-200 flex items-center justify-center gap-2 group/btn"
+            className="w-full py-2 bg-red-600 text-white font-bold text-sm rounded-lg hover:bg-red-700 transition-all duration-200 flex items-center justify-center gap-2 group/btn shadow-sm"
           >
             <ShoppingBag className="w-4 h-4" />
             Mua ngay

@@ -1,8 +1,9 @@
 
-import { Product, BlogPost, Collection } from '../types';
+import { Product, BlogPost, Collection, Order, DashboardStats } from '../types';
 
 // Mock Data Products
-const PRODUCTS: Product[] = [
+let PRODUCTS: Product[] = [
+  // --- Thời trang nam ---
   {
     id: 1,
     title: "Balo Thời Trang Nam Cao Cấp",
@@ -30,14 +31,7 @@ const PRODUCTS: Product[] = [
     description: "Chất liệu 100% cotton thoáng mát, thấm hút mồ hôi tốt. Kiểu dáng slimfit tôn dáng.",
     category: "thoi-trang-nam",
     image: "https://picsum.photos/id/1059/400/400",
-    images: [
-      "https://picsum.photos/id/1059/400/400",
-      "https://picsum.photos/id/1060/400/400"
-    ],
     rating: { rate: 4.1, count: 259 },
-    reviews: [
-        { id: 1, user: "Le Van C", comment: "Vải mát, mặc thích.", rating: 5, date: "2023-09-20" }
-    ],
     colors: ["Trắng", "Đen", "Xám"],
     sizes: ["S", "M", "L", "XL"]
   },
@@ -52,6 +46,64 @@ const PRODUCTS: Product[] = [
     colors: ["Đỏ đô", "Xanh than", "Đen"],
     sizes: ["M", "L", "XL", "2XL"]
   },
+  {
+    id: 101,
+    title: "Quần Jean Nam Slimfit",
+    price: 480000,
+    description: "Quần Jean co giãn, màu sắc trẻ trung, dễ phối đồ.",
+    category: "thoi-trang-nam",
+    image: "https://images.unsplash.com/photo-1542272617-08f086303294?auto=format&fit=crop&w=400&q=80",
+    rating: { rate: 4.3, count: 150 },
+    colors: ["Xanh nhạt", "Xanh đậm"],
+    sizes: ["29", "30", "31", "32"]
+  },
+
+  // --- Thời trang nữ ---
+  {
+    id: 8,
+    title: "Áo Khoác Dạ Nữ",
+    price: 1200000,
+    description: "Phong cách Hàn Quốc, giữ ấm cực tốt, màu sắc trang nhã.",
+    category: "thoi-trang-nu",
+    image: "https://picsum.photos/id/325/400/400",
+    rating: { rate: 4.5, count: 100 },
+    colors: ["Be", "Nâu đất", "Đen"],
+    sizes: ["S", "M", "L"]
+  },
+  {
+    id: 201,
+    title: "Đầm Hoa Nhí Vintage",
+    price: 350000,
+    description: "Đầm voan hoa nhí nhẹ nhàng, phù hợp đi chơi, dạo phố.",
+    category: "thoi-trang-nu",
+    image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=400&q=80",
+    rating: { rate: 4.6, count: 88 },
+    sizes: ["S", "M"]
+  },
+  {
+    id: 202,
+    title: "Chân Váy Xếp Ly",
+    price: 250000,
+    description: "Chân váy dài xếp ly, lưng thun thoải mái.",
+    category: "thoi-trang-nu",
+    image: "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=400&q=80",
+    rating: { rate: 4.2, count: 45 },
+    colors: ["Đen", "Nâu", "Kem"],
+    sizes: ["Freesize"]
+  },
+  {
+    id: 203,
+    title: "Áo Sơ Mi Lụa",
+    price: 420000,
+    description: "Chất liệu lụa mềm mại, sang trọng, không nhăn.",
+    category: "thoi-trang-nu",
+    image: "https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?auto=format&fit=crop&w=400&q=80",
+    rating: { rate: 4.8, count: 210 },
+    colors: ["Trắng", "Xanh pastel"],
+    sizes: ["S", "M", "L"]
+  },
+
+  // --- Trang sức ---
   {
     id: 4,
     title: "Vòng Tay Bạc Nữ",
@@ -73,6 +125,26 @@ const PRODUCTS: Product[] = [
     sizes: ["6", "7", "8", "9"]
   },
   {
+    id: 301,
+    title: "Dây Chuyền Mặt Trăng",
+    price: 550000,
+    description: "Dây chuyền bạc 925, mặt hình trăng khuyết đính đá.",
+    category: "trang-suc",
+    image: "https://images.unsplash.com/photo-1599643478518-17488fbbcd75?auto=format&fit=crop&w=400&q=80",
+    rating: { rate: 4.7, count: 120 }
+  },
+  {
+    id: 302,
+    title: "Bông Tai Ngọc Trai",
+    price: 1200000,
+    description: "Ngọc trai nuôi nước ngọt, chốt bạc ý.",
+    category: "trang-suc",
+    image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=400&q=80",
+    rating: { rate: 4.5, count: 90 }
+  },
+
+  // --- Điện tử ---
+  {
     id: 6,
     title: "Ổ Cứng SSD 1TB",
     price: 2100000,
@@ -91,16 +163,25 @@ const PRODUCTS: Product[] = [
     rating: { rate: 4.2, count: 150 }
   },
   {
-    id: 8,
-    title: "Áo Khoác Dạ Nữ",
-    price: 1200000,
-    description: "Phong cách Hàn Quốc, giữ ấm cực tốt, màu sắc trang nhã.",
-    category: "thoi-trang-nu",
-    image: "https://picsum.photos/id/325/400/400",
-    rating: { rate: 4.5, count: 100 },
-    colors: ["Be", "Nâu đất", "Đen"],
-    sizes: ["S", "M", "L"]
+    id: 401,
+    title: "Tai Nghe Bluetooth Chụp Tai",
+    price: 1800000,
+    description: "Chống ồn chủ động, pin trâu 30h nghe nhạc liên tục.",
+    category: "dien-tu",
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80",
+    rating: { rate: 4.6, count: 500 },
+    colors: ["Đen", "Bạc"]
   },
+  {
+    id: 402,
+    title: "Loa Bluetooth Mini",
+    price: 650000,
+    description: "Nhỏ gọn, âm bass mạnh mẽ, chống nước IPX7.",
+    category: "dien-tu",
+    image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=400&q=80",
+    rating: { rate: 4.4, count: 300 },
+    colors: ["Đỏ", "Xanh", "Đen"]
+  }
 ];
 
 // Mock Data Blogs
@@ -162,12 +243,21 @@ const COLLECTIONS: Collection[] = [
   }
 ];
 
+// Mock Orders
+let ORDERS: Order[] = [
+    { id: 'ORD-001', customerName: 'Nguyễn Văn A', date: '2023-10-25', total: 450000, status: 'completed', items: 1 },
+    { id: 'ORD-002', customerName: 'Trần Thị B', date: '2023-10-26', total: 1200000, status: 'shipping', items: 2 },
+    { id: 'ORD-003', customerName: 'Lê Văn C', date: '2023-10-27', total: 3500000, status: 'pending', items: 1 },
+    { id: 'ORD-004', customerName: 'Phạm Thị D', date: '2023-10-27', total: 150000, status: 'cancelled', items: 1 },
+    { id: 'ORD-005', customerName: 'Hoàng Văn E', date: '2023-10-28', total: 890000, status: 'pending', items: 1 },
+];
+
 // Simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const api = {
   getProducts: async (): Promise<Product[]> => {
-    await delay(800); // 800ms simulation
+    await delay(800);
     return PRODUCTS;
   },
 
@@ -200,5 +290,28 @@ export const api = {
   getCollections: async (): Promise<Collection[]> => {
     await delay(500);
     return COLLECTIONS;
+  },
+
+  // Admin APIs
+  getOrders: async (): Promise<Order[]> => {
+    await delay(600);
+    return ORDERS;
+  },
+
+  getDashboardStats: async (): Promise<DashboardStats> => {
+    await delay(500);
+    const totalRevenue = ORDERS.filter(o => o.status !== 'cancelled').reduce((sum, o) => sum + o.total, 0);
+    return {
+        totalRevenue,
+        totalOrders: ORDERS.length,
+        totalProducts: PRODUCTS.length,
+        recentOrders: ORDERS.slice(0, 5) // Recent 5
+    };
+  },
+
+  deleteProduct: async (id: number): Promise<boolean> => {
+    await delay(500);
+    PRODUCTS = PRODUCTS.filter(p => p.id !== id);
+    return true;
   }
 };
