@@ -119,7 +119,7 @@ export const publicApi = {
     overlay_color?: string;
     overlay_opacity: number;
   }[]> => {
-    const res = await fetch(`${API_URL}/api/banners/hero-slider`, { headers: getHeaders() });
+    const res = await fetch(`${API_URL}/api/banners?position=hero-slider`, { headers: getHeaders() });
     return handleResponse(res);
   },
 
