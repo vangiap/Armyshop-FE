@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Collection, CollectionImage } from '../../types';
+import { Collection } from '../../types';
 import { api } from '../../services';
 
 const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000') as string;
@@ -18,13 +18,6 @@ const getImageUrl = (path: string | null): string | null => {
 const placeholderImage = 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80';
 
 // Flattened image structure for lightbox navigation
-interface FlatImage {
-  url: string;
-  collectionTitle: string;
-  collectionSubtitle?: string;
-  imageIndex: number;
-  totalInCollection: number;
-}
 
 const FeaturedCollections: React.FC = () => {
   const [collections, setCollections] = useState<Collection[]>([]);

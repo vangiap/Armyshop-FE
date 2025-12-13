@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../services';
 import { Order } from '../../types';
-import { Eye, Search, Loader2, AlertCircle, ChevronDown, RefreshCw } from 'lucide-react';
+import { Eye, Search, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 
 const AdminOrdersPage: React.FC = () => {
   const navigate = useNavigate();

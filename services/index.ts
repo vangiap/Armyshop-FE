@@ -126,8 +126,17 @@ export const api = {
       return publicApi.getFeaturedCategories();
     }
     // Fallback: return categories with most products
-    const cats = await fakeApi.getCategories();
-    return cats.slice(0, 4);
+    const categorySlugs = await fakeApi.getCategories();
+    const mockCategories: Category[] = categorySlugs.slice(0, 4).map((slug, index) => ({
+      id: index + 1,
+      name: slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' '),
+      slug: slug,
+      description: `Danh mục ${slug}`,
+      image: `https://picsum.photos/id/${100 + index}/400/400`,
+      products_count: Math.floor(Math.random() * 50) + 10,
+      is_active: true
+    }));
+    return mockCategories;
   },
 
   // Collections

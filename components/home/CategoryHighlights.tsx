@@ -18,7 +18,7 @@ const defaultImages = [
 ];
 
 // Helper to get full image URL
-const getImageUrl = (path: string | null): string | null => {
+const getImageUrl = (path: string | null | undefined): string | null => {
   if (!path) return null;
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
   if (path.startsWith('/')) return `${API_URL}${path}`;
