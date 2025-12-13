@@ -43,7 +43,7 @@ const ProductsPage: React.FC = () => {
       try {
         setLoading(true);
         const [productsData, categoriesData] = await Promise.all([
-          api.getProducts(),
+          api.getProducts({ per_page: 200 }),
           api.getCategories()
         ]);
         setAllProducts(productsData);
@@ -57,14 +57,7 @@ const ProductsPage: React.FC = () => {
     fetchData();
   }, []);
 
-  // Update URL param when category changes locally
-  useEffect(() => {
-    if (selectedCategory !== 'all') {
-      setSearchParams({ category: selectedCategory });
-    } else {
-      setSearchParams({});
-    }
-  }, [selectedCategory, setSearchParams]);
+  // (URL updates are handled explicitly via `changeCategory` to avoid loops)
 
   // Filtering Logic
   const filteredProducts = allProducts.filter(product => {

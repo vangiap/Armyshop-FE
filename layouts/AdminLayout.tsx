@@ -1,7 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingCart, LogOut, Store } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, LogOut, Store, FileText } from 'lucide-react';
 
 const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -50,6 +50,13 @@ const AdminLayout: React.FC = () => {
             >
                 <ShoppingCart className="w-5 h-5 mr-3" />
                 Đơn hàng
+            </NavLink>
+            <NavLink 
+              to="/admin/blogs" 
+              className={({ isActive }) => `flex items-center px-4 py-3 rounded-lg transition-colors ${isActive ? 'bg-primary text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}
+            >
+              <FileText className="w-5 h-5 mr-3" />
+              Bài viết
             </NavLink>
         </nav>
 

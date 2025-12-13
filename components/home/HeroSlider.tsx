@@ -13,19 +13,8 @@ const getImageUrl = (path: string | null): string => {
   return path;
 };
 
-// Default slides (fallback)
-const defaultSlides = [
-  {
-    id: 1,
-    image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
-    title: "Phong Cách Sống Hiện Đại",
-    subtitle: "Khám phá bộ sưu tập thời trang nam mới nhất",
-    link: "/products",
-    link_text: "Mua Sắm Ngay",
-    text_color: "#ffffff",
-    overlay_opacity: 40,
-  },
-];
+// Start with no slides (will be replaced by API response or fake API)
+const defaultSlides: Slide[] = [];
 
 interface Slide {
   id: number;
@@ -49,8 +38,11 @@ const HeroSlider: React.FC = () => {
     const fetchSlides = async () => {
       try {
         const data = await api.getHeroSlider();
-        if (data && data.length > 0) {
+        // Always replace initial slides with API result (may be empty array)
+        if (Array.isArray(data)) {
           setSlides(data);
+        } else {
+          setSlides([]);
         }
       } catch (error) {
         console.error('Failed to fetch hero slides:', error);

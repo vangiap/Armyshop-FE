@@ -1,4 +1,4 @@
-import { Product, Order, DashboardStats, Category, PaginatedResponse } from '../types';
+import { Product, Order, DashboardStats, Category, PaginatedResponse, BlogPost } from '../types';
 
 const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000') as string;
 
@@ -212,6 +212,18 @@ export const publicApi = {
     const res = await fetch(`${API_URL}/api/orders/${orderNumber}`, { headers: getHeaders() });
     return handleResponse(res);
   },
+
+  // Blogs - Public access
+  getBlogPosts: async (): Promise<{ data: BlogPost[]; meta: PaginatedResponse }> => {
+    const res = await fetch(`${API_URL}/api/blogs`, { headers: getHeaders() });
+    const json = await res.json();
+    return { data: json.data ?? [], meta: json.meta ?? {} };
+  },
+
+  getBlogPost: async (id: number): Promise<BlogPost> => {
+    const res = await fetch(`${API_URL}/api/blogs/${id}`, { headers: getHeaders() });
+    return handleResponse(res);
+  },
 };
 
 // ============================================================================
@@ -350,6 +362,44 @@ export const adminApi = {
       headers: getHeaders()
     });
     if (!res.ok) throw new Error('Failed to delete category');
+    return true;
+  },
+
+  // Blogs (Admin)
+  getBlogPosts: async (): Promise<BlogPost[]> => {
+    const res = await fetch(`${API_URL}/api/admin/blogs`, { headers: getHeaders() });
+    return handleResponse(res);
+  },
+
+  getBlogPost: async (id: number): Promise<BlogPost> => {
+    const res = await fetch(`${API_URL}/api/admin/blogs/${id}`, { headers: getHeaders() });
+    return handleResponse(res);
+  },
+
+  createBlogPost: async (postData: Partial<BlogPost>): Promise<BlogPost> => {
+    const res = await fetch(`${API_URL}/api/admin/blogs`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(postData)
+    });
+    return handleResponse(res);
+  },
+
+  updateBlogPost: async (id: number, postData: Partial<BlogPost>): Promise<BlogPost> => {
+    const res = await fetch(`${API_URL}/api/admin/blogs/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(postData)
+    });
+    return handleResponse(res);
+  },
+
+  deleteBlogPost: async (id: number): Promise<boolean> => {
+    const res = await fetch(`${API_URL}/api/admin/blogs/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    if (!res.ok) throw new Error('Failed to delete blog post');
     return true;
   },
 };

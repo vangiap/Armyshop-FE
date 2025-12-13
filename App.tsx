@@ -23,6 +23,8 @@ import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProductsPage from './pages/admin/AdminProductsPage';
 import AdminOrdersPage from './pages/admin/AdminOrdersPage';
+import AdminBlogsPage from './pages/admin/AdminBlogsPage';
+import AdminBlogEditPage from './pages/admin/AdminBlogEditPage';
 
 const App: React.FC = () => {
   return (
@@ -48,6 +50,9 @@ const App: React.FC = () => {
               <Route index element={<AdminDashboard />} />
               <Route path="products" element={<AdminProductsPage />} />
               <Route path="orders" element={<AdminOrdersPage />} />
+              <Route path="blogs" element={<AdminBlogsPage />} />
+              <Route path="blogs/create" element={<AdminBlogEditPage />} />
+              <Route path="blogs/:id" element={<AdminBlogEditPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

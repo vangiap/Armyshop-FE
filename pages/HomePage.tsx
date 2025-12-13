@@ -11,6 +11,7 @@ import PromoBanner from '../components/home/PromoBanner';
 import HeroSlider from '../components/home/HeroSlider';
 import FeaturedCollections from '../components/home/FeaturedCollections';
 import LatestNews from '../components/home/LatestNews';
+import FeaturedProducts from '../components/home/FeaturedProducts';
 import { useShop } from '../context/ShopContext';
 
 const HomePage: React.FC = () => {
@@ -23,7 +24,7 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const prods = await api.getProducts();
+        const prods = await api.getProducts({ per_page: 200 });
         setProducts(prods);
         
         // Get unique categories from products
@@ -62,10 +63,10 @@ const HomePage: React.FC = () => {
   return (
     <div className="pb-0 bg-white">
       <HeroSlider />
-      
-      <ServiceFeatures />
-      
+    
       <CategoryHighlights onSelectCategory={(cat) => navigate(`/products?category=${cat}`)} />
+
+      <FeaturedProducts />
 
       {/* Loop through defined sections */}
       {sections.map((section, index) => {
@@ -82,7 +83,7 @@ const HomePage: React.FC = () => {
             {index === 2 && <PromoBanner />}
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 border-t border-gray-100 first:border-0">
-              <div className="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-10">
+              <div className="flex items-center justify-between mb-8">
                 <div>
                   <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{section.title}</h2>
                   <p className="mt-2 text-gray-500 text-sm md:text-base">{section.description}</p>
@@ -131,9 +132,8 @@ const HomePage: React.FC = () => {
       <div id="products-section"></div> {/* Anchor for scroll */}
       
       <LatestNews />
-
       <FeaturedCollections />
-      {/* Removed NewsletterSection */}
+      <ServiceFeatures />
     </div>
   );
 };

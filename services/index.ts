@@ -14,22 +14,45 @@ const fixImageUrl = (url: string | null | undefined): string => {
 };
 
 // Transform product to fix image URLs and ensure correct types
-const transformProduct = (product: Product): Product => ({
-  ...product,
-  price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
-  image: fixImageUrl(product.image),
-  images: product.images?.map(fixImageUrl) || [fixImageUrl(product.image)]
-});
+const transformProduct = (product: Product): Product => {
+  // Normalize category: API may return a slug string or a category object
+  let categorySlug: string = '';
+  let categoryName: string | undefined = product.category_name;
+
+  if (product.category && typeof product.category === 'string') {
+    categorySlug = product.category;
+  } else if (product.category && typeof product.category === 'object') {
+    const cat: any = product.category as any;
+    categorySlug = (cat.slug && String(cat.slug)) || (cat.id && String(cat.id)) || (cat.name && String(cat.name).replace(/\s+/g, '-').toLowerCase()) || '';
+    categoryName = categoryName || cat.name || categorySlug;
+  }
+
+  // Fallback when nothing provided
+  if (!categorySlug && product.category_name) {
+    categorySlug = String(product.category_name).replace(/\s+/g, '-').toLowerCase();
+  }
+
+  return {
+    ...product,
+    price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
+    category: categorySlug || (product.category as unknown as string) || '',
+    category_name: categoryName || (product.category as unknown as string) || product.category_name,
+    image: fixImageUrl(product.image),
+    images: product.images?.map(fixImageUrl) || [fixImageUrl(product.image)]
+  } as Product;
+};
 
 // Unified API interface that works with both fake and real API
 export const api = {
   // Products
-  getProducts: async (): Promise<Product[]> => {
+  getProducts: async (params?: { per_page?: number; category?: string; sort?: string; q?: string }): Promise<Product[]> => {
     if (USE_REAL_API) {
-      const result = await publicApi.getProducts();
+      const result = await publicApi.getProducts(params as any);
       return result.data.map(transformProduct);
     }
-    return fakeApi.getProducts();
+    const products = await fakeApi.getProducts();
+    if (params?.per_page) return products.slice(0, params.per_page);
+    return products;
   },
 
   getProductById: async (id: number): Promise<Product | undefined> => {
@@ -111,13 +134,63 @@ export const api = {
     return fakeApi.getRelatedProducts(category, currentId);
   },
 
-  // Blog (still using fake API)
+  // Blog
   getBlogPosts: async (): Promise<BlogPost[]> => {
+    if (USE_REAL_API) {
+      const result = await publicApi.getBlogPosts();
+      return result.data.map((post: any) => ({
+        id: post.id,
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content,
+        image: fixImageUrl(post.image),
+        author: post.author,
+        date: post.date,
+        category: post.category,
+      }));
+    }
     return fakeApi.getBlogPosts();
   },
 
   getBlogPostById: async (id: number): Promise<BlogPost | undefined> => {
+    if (USE_REAL_API) {
+      const result = await publicApi.getBlogPost(id);
+      if (result) {
+        return {
+          id: result.id,
+          title: result.title,
+          excerpt: result.excerpt,
+          content: result.content,
+          image: fixImageUrl(result.image),
+          author: result.author,
+          date: result.date,
+          category: result.category,
+        };
+      }
+      return undefined;
+    }
     return fakeApi.getBlogPostById(id);
+  },
+
+  createBlogPost: async (post: Partial<BlogPost>): Promise<BlogPost> => {
+    if (USE_REAL_API) {
+      return adminApi.createBlogPost(post as any);
+    }
+    return fakeApi.createBlogPost(post);
+  },
+
+  updateBlogPost: async (id: number, data: Partial<BlogPost>): Promise<BlogPost> => {
+    if (USE_REAL_API) {
+      return adminApi.updateBlogPost(id, data as any);
+    }
+    return fakeApi.updateBlogPost(id, data);
+  },
+
+  deleteBlogPost: async (id: number): Promise<boolean> => {
+    if (USE_REAL_API) {
+      return adminApi.deleteBlogPost(id);
+    }
+    return fakeApi.deleteBlogPost(id);
   },
 
   // Featured categories
@@ -237,4 +310,3 @@ export { publicApi, authApi, adminApi, apiClient };
 // Legacy export
 export { apiClient as realApi };
 export { fakeApi };
-

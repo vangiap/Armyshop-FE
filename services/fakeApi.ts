@@ -185,7 +185,7 @@ let PRODUCTS: Product[] = [
 ];
 
 // Mock Data Blogs
-const BLOG_POSTS: BlogPost[] = [
+let BLOG_POSTS: BlogPost[] = [
   {
     id: 1,
     title: "Xu hướng thời trang Thu Đông 2024",
@@ -285,6 +285,38 @@ export const api = {
   getBlogPostById: async (id: number): Promise<BlogPost | undefined> => {
     await delay(400);
     return BLOG_POSTS.find(p => p.id === id);
+  },
+
+  createBlogPost: async (post: Partial<BlogPost>): Promise<BlogPost> => {
+    await delay(400);
+    const maxId = BLOG_POSTS.reduce((m, p) => Math.max(m, p.id), 0);
+    const newPost: BlogPost = {
+      id: maxId + 1,
+      title: post.title || 'Untitled',
+      excerpt: post.excerpt || '',
+      content: post.content || '',
+      image: post.image || 'https://picsum.photos/800/400',
+      author: post.author || 'Admin',
+      date: post.date || new Date().toLocaleDateString('vi-VN'),
+      category: post.category || 'Khác'
+    } as BlogPost;
+    BLOG_POSTS.unshift(newPost);
+    return newPost;
+  },
+
+  updateBlogPost: async (id: number, data: Partial<BlogPost>): Promise<BlogPost> => {
+    await delay(400);
+    const idx = BLOG_POSTS.findIndex(p => p.id === id);
+    if (idx === -1) throw new Error('Bài viết không tồn tại');
+    BLOG_POSTS[idx] = { ...BLOG_POSTS[idx], ...data } as BlogPost;
+    return BLOG_POSTS[idx];
+  },
+
+  deleteBlogPost: async (id: number): Promise<boolean> => {
+    await delay(300);
+    const before = BLOG_POSTS.length;
+    BLOG_POSTS = BLOG_POSTS.filter(p => p.id !== id);
+    return BLOG_POSTS.length < before;
   },
 
   getCollections: async (): Promise<Collection[]> => {

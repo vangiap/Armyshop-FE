@@ -107,10 +107,12 @@ const FeaturedCollections: React.FC = () => {
     <>
       <div className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">Bộ Sưu Tập Nổi Bật</h2>
-            <div className="w-24 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
-            <p className="mt-4 text-gray-500">Khám phá những khoảnh khắc đẹp được tuyển chọn</p>
+          <div className="flex items-center justify-between mb-12">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Bộ Sưu Tập Nổi Bật</h2>
+              <div className="w-24 h-1 bg-primary mt-4 rounded-full"></div>
+              <p className="mt-4 text-gray-500">Khám phá những khoảnh khắc đẹp được tuyển chọn</p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

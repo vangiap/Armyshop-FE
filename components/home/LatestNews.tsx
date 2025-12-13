@@ -26,9 +26,9 @@ const LatestNews: React.FC = () => {
   return (
     <div className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-10">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">Tin Tức & Sự Kiện</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Tin Tức & Sự Kiện</h2>
             <div className="w-20 h-1 bg-primary mt-3 rounded-full"></div>
           </div>
           <Link to="/blog" className="hidden md:flex items-center text-primary font-semibold hover:text-emerald-700 transition-colors">
