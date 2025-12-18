@@ -7,19 +7,15 @@ import { Plus, Edit2, Trash2, Loader2 } from 'lucide-react';
 const AdminBlogsPage: React.FC = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<number | null>(null);
 
   const loadPosts = async () => {
     try {
-      setLoading(true);
       const data = await adminApi.getBlogPosts();
       setPosts(data);
     } catch (err: any) {
       console.error(err);
       if (err.message?.includes('401')) navigate('/admin/login');
-    } finally {
-      setLoading(false);
     }
   };
 

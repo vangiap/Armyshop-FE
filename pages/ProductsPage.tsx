@@ -12,7 +12,7 @@ import { useShop } from '../context/ShopContext';
 const ProductsPage: React.FC = () => {
   const { addToCart } = useShop();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   
   // Data State
   const [allProducts, setAllProducts] = useState<Product[]>([]);
