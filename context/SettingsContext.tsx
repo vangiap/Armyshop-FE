@@ -96,6 +96,22 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
           site_favicon: getFullUrl(data.site_favicon || null),
         };
         setSettings(processedData as SiteSettings);
+        // Apply favicon to document head if available
+        try {
+          const fav = processedData.site_favicon;
+          if (fav) {
+            let link: HTMLLinkElement | null = document.querySelector("link[rel~='icon']");
+            if (!link) {
+              link = document.createElement('link');
+              link.rel = 'icon';
+              document.head.appendChild(link);
+            }
+            link.href = fav;
+          }
+        } catch (e) {
+          // Fail silently in non-browser environments
+          // console.warn('Unable to set favicon:', e);
+        }
       } catch (error) {
         console.error('Failed to fetch settings:', error);
       } finally {

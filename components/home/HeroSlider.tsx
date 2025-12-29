@@ -40,6 +40,31 @@ const HeroSlider: React.FC = () => {
         const data = await api.getHeroSlider();
         // Always replace initial slides with API result (may be empty array)
         if (Array.isArray(data)) {
+          // Preload images to avoid a flash/black frame on first render
+          const preload = (urls: string[]) => Promise.all(urls.map(u => new Promise<void>(res => {
+            if (!u) return res();
+            const img = new Image();
+            img.onload = () => res();
+            img.onerror = () => res();
+            img.src = u;
+          })));
+
+          try {
+            const urls: string[] = [];
+            (data || []).forEach((s: any) => {
+              const d = getImageUrl(s.image);
+              const m = getImageUrl(s.image_mobile || s.image);
+              if (d) urls.push(d);
+              if (m) urls.push(m);
+            });
+            // preload first slide first for faster visible render
+            if (urls.length > 0) await preload([urls[0]]);
+            // continue preloading remaining images in background
+            if (urls.length > 1) preload(urls.slice(1));
+          } catch (e) {
+            // ignore preload errors
+          }
+
           setSlides(data);
         } else {
           setSlides([]);
@@ -118,9 +143,6 @@ const HeroSlider: React.FC = () => {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="max-w-7xl w-full px-4 sm:px-6 lg:px-8 flex justify-center text-center">
                 <div className="max-w-3xl" style={{ color: slide.text_color }}>
-                  <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-sm font-medium mb-4">
-                    🔥 Bộ sưu tập mới 2024
-                  </span>
                   <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight shadow-sm">
                     {slide.title}
                   </h1>

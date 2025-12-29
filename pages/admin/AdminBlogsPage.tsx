@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { adminApi } from '../../services';
 import { BlogPost } from '../../types';
 import { Plus, Edit2, Trash2, Loader2 } from 'lucide-react';
+import { getImageUrl } from '../../utils/imageUrl';
 
 const AdminBlogsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ const AdminBlogsPage: React.FC = () => {
               {posts.map(p => (
                 <tr key={p.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4">
-                    <img src={p.image} alt={p.title} className="w-16 h-10 object-cover rounded" />
+                    <img src={getImageUrl(p.image) || '/placeholder-blog.jpg'} alt={p.title} className="w-16 h-10 object-cover rounded" />
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-900">{p.title}</td>
                   <td className="px-6 py-4">{p.category}</td>

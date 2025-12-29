@@ -25,7 +25,7 @@ const AdminLayout: React.FC = () => {
       <aside className="w-64 bg-gray-900 text-white flex-shrink-0 hidden md:flex flex-col">
         <div className="p-6 border-b border-gray-800 flex items-center">
             <Store className="w-8 h-8 text-primary mr-2" />
-            <span className="text-xl font-bold">VietShop Admin</span>
+            <span className="text-xl font-bold">ArmyShop Admin</span>
         </div>
         
         <nav className="flex-1 p-4 space-y-2">
@@ -74,7 +74,7 @@ const AdminLayout: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow-sm h-16 flex items-center justify-between px-6 md:hidden">
-            <span className="font-bold text-gray-900">VietShop Admin</span>
+            <span className="font-bold text-gray-900">ArmyShop Admin</span>
             <button onClick={handleLogout}><LogOut className="w-5 h-5" /></button>
         </header>
 

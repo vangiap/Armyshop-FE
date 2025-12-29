@@ -95,14 +95,6 @@ const Footer: React.FC = () => {
                   {settings.contact_address}
                 </li>
               )}
-              {settings.contact_hotline && (
-                <li className="flex items-start">
-                  <span className="font-medium text-gray-900 mr-2">Hotline:</span>
-                  <a href={`tel:${settings.contact_hotline.replace(/\s/g, '')}`} className="hover:text-primary">
-                    {settings.contact_hotline}
-                  </a>
-                </li>
-              )}
               {settings.contact_phone && (
                 <li className="flex items-start">
                   <span className="font-medium text-gray-900 mr-2">Điện thoại:</span>

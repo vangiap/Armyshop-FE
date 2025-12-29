@@ -3,16 +3,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Collection } from '../../types';
 import { api } from '../../services';
-
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000') as string;
-
-// Helper to get full image URL
-const getImageUrl = (path: string | null): string | null => {
-  if (!path) return null;
-  if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  if (path.startsWith('/')) return `${API_URL}${path}`;
-  return path;
-};
+import { getImageUrl } from '../../utils/imageUrl';
 
 // Placeholder image
 const placeholderImage = 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80';

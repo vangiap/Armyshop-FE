@@ -25,6 +25,7 @@ import AdminProductsPage from './pages/admin/AdminProductsPage';
 import AdminOrdersPage from './pages/admin/AdminOrdersPage';
 import AdminBlogsPage from './pages/admin/AdminBlogsPage';
 import AdminBlogEditPage from './pages/admin/AdminBlogEditPage';
+import AdminProductEditPage from './pages/admin/AdminProductEditPage';
 
 const App: React.FC = () => {
   return (
@@ -49,6 +50,8 @@ const App: React.FC = () => {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="products" element={<AdminProductsPage />} />
+              <Route path="products/create" element={<AdminProductEditPage />} />
+              <Route path="products/:id" element={<AdminProductEditPage />} />
               <Route path="orders" element={<AdminOrdersPage />} />
               <Route path="blogs" element={<AdminBlogsPage />} />
               <Route path="blogs/create" element={<AdminBlogEditPage />} />

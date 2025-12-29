@@ -3,6 +3,7 @@ import React from 'react';
 import { Calendar, User, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BlogPost } from '../types';
+import { getImageUrl } from '../utils/imageUrl';
 
 interface BlogCardProps {
   post: BlogPost;
@@ -13,7 +14,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
     <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 flex flex-col h-full group">
       <div className="relative h-48 overflow-hidden">
         <img 
-          src={post.image} 
+          src={getImageUrl(post.image) || '/placeholder-blog.jpg'} 
           alt={post.title} 
           className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
         />

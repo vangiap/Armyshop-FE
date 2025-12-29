@@ -242,19 +242,19 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }}>
       {children}
       {notification && (
-        <div className={`fixed bottom-4 left-4 right-4 sm:right-auto sm:w-auto z-50 backdrop-blur px-6 py-4 rounded-xl shadow-2xl flex items-center animate-bounce-in border ${
+        <div className={`fixed top-4 right-4 z-50 backdrop-blur-sm px-3 py-2 rounded-lg shadow-md flex items-center transition-opacity duration-150 ease-out max-w-sm w-auto border ${
           notification.type === 'success' 
-            ? 'bg-gray-900/90 border-gray-700/50 text-white' 
+            ? 'bg-gray-900/70 border-gray-700/40 text-white' 
             : notification.type === 'warning'
             ? 'bg-amber-50 border-amber-200 text-amber-800'
             : 'bg-red-50 border-red-200 text-red-800'
         }`}>
           {notification.type === 'success' ? (
-            <CheckCircle className="h-6 w-6 text-green-400 mr-3 flex-shrink-0" />
+            <CheckCircle className="h-5 w-5 text-green-300 mr-2 flex-shrink-0 opacity-90" />
           ) : (
-            <AlertTriangle className={`h-6 w-6 mr-3 flex-shrink-0 ${notification.type === 'warning' ? 'text-amber-500' : 'text-red-500'}`} />
+            <AlertTriangle className={`h-5 w-5 mr-2 flex-shrink-0 ${notification.type === 'warning' ? 'text-amber-500' : 'text-red-500'}`} />
           )}
-          <span className="font-medium">{notification.message}</span>
+          <span className="text-sm">{notification.message}</span>
         </div>
       )}
     </ShopContext.Provider>

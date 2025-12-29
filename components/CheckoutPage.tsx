@@ -49,7 +49,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, clearCart }) => 
         </div>
         <h2 className="text-3xl font-bold text-gray-900 mb-4">Đặt hàng thành công!</h2>
         <p className="text-gray-600 mb-8">
-          Cảm ơn bạn đã mua sắm tại VietShop. Mã đơn hàng của bạn là <span className="font-mono font-bold text-gray-900">#VN{Math.floor(Math.random() * 10000)}</span>.
+          Cảm ơn bạn đã mua sắm tại ArmyShop. Mã đơn hàng của bạn là <span className="font-mono font-bold text-gray-900">#VN{Math.floor(Math.random() * 10000)}</span>.
           Chúng tôi sẽ liên hệ với bạn sớm để xác nhận đơn hàng.
         </p>
         <button

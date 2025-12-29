@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ShoppingCart, Search, Menu, Store, X, ChevronDown } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
@@ -12,6 +12,12 @@ const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isProductDropdownOpen, setIsProductDropdownOpen] = useState(false); // For mobile
+  const [query, setQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [suggestLoading, setSuggestLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchRef = useRef<HTMLDivElement | null>(null);
+  const debounceRef = useRef<number | null>(null);
   
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const location = useLocation();
@@ -28,6 +34,61 @@ const Navbar: React.FC = () => {
     };
     fetchCategories();
   }, []);
+
+  // Close suggestions on outside click
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('click', onDocClick);
+    return () => document.removeEventListener('click', onDocClick);
+  }, []);
+
+  const fetchSuggestions = useCallback(async (q: string) => {
+    if (!q || q.trim().length === 0) {
+      setSuggestions([]);
+      setSuggestLoading(false);
+      return;
+    }
+    setSuggestLoading(true);
+    try {
+      const results = await api.searchProducts(q.trim());
+      if (results && results.length > 0) {
+        setSuggestions(results.slice(0, 6));
+      } else {
+        // Fallback: fetch a small page of products and do diacritics-insensitive substring match
+        try {
+          const candidates = await api.getProducts({ per_page: 100 });
+          const normalize = (s: string) => s?.toString().normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+          const nq = normalize(q.trim());
+          const matched = candidates.filter((p: any) => {
+            const title = normalize(p.title || p.name || '');
+            return title.includes(nq);
+          });
+          setSuggestions(matched.slice(0, 6));
+        } catch (inner) {
+          setSuggestions([]);
+        }
+      }
+    } catch (e) {
+      console.error('Search suggestions failed', e);
+      setSuggestions([]);
+    } finally {
+      setSuggestLoading(false);
+    }
+  }, []);
+
+  const handleInputChange = (value: string) => {
+    setQuery(value);
+    setSearchQuery(value); // keep global context in sync
+    setShowSuggestions(true);
+    if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    // debounce 250ms
+    // @ts-ignore
+    debounceRef.current = window.setTimeout(() => fetchSuggestions(value), 250);
+  };
 
   const isActive = (path: string) => {
       if (path === '/' && location.pathname !== '/') return false;
@@ -126,17 +187,45 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="hidden sm:flex flex-1 max-w-xs mx-8">
+          <div className="hidden sm:flex flex-1 max-w-xs mx-8" ref={searchRef}>
             <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-4 w-4 text-gray-400" />
               </div>
               <input
                 type="text"
+                value={query}
+                onChange={(e) => handleInputChange(e.target.value)}
+                onFocus={() => { if (query) setShowSuggestions(true); }}
                 className="block w-full pl-9 pr-3 py-1.5 border border-gray-300 rounded-full leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:border-primary focus:ring-1 focus:ring-primary sm:text-sm transition duration-150 ease-in-out"
                 placeholder="Tìm sản phẩm..."
-                onChange={(e) => setSearchQuery(e.target.value)}
               />
+
+              {/* Suggestions dropdown */}
+              {showSuggestions && (suggestions.length > 0 || suggestLoading) && (
+                <div className="absolute mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden">
+                  {suggestLoading ? (
+                    <div className="p-3 text-sm text-gray-500">Đang tìm...</div>
+                  ) : (
+                    <ul>
+                      {suggestions.map(s => (
+                        <li key={s.id} className="cursor-pointer hover:bg-gray-50">
+                          <button
+                            onClick={() => { setShowSuggestions(false); navigate(`/product/${s.id}`); }}
+                            className="w-full text-left px-3 py-2 flex items-center gap-3"
+                          >
+                            <img src={s.image} alt={s.title} className="w-10 h-10 object-cover rounded-md" />
+                            <div className="text-sm">
+                              <div className="font-medium text-gray-900 truncate">{s.title}</div>
+                              <div className="text-xs text-gray-500">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(s.price)}</div>
+                            </div>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -177,7 +266,7 @@ const Navbar: React.FC = () => {
                   type="text"
                   className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm"
                   placeholder="Tìm kiếm..."
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => { setSearchQuery(e.target.value); /* lightweight mobile search only */ }}
                 />
             </div>
             

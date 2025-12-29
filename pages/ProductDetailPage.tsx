@@ -290,72 +290,75 @@ const ProductDetailPage: React.FC = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-6 py-3">
       <Breadcrumbs items={[
         { label: product.category.replace(/-/g, ' '), path: '/' },
         { label: product.title }
       ]} />
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-8">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6">
           
           {/* Gallery Section */}
-          <div className="p-8 bg-gray-50 flex flex-col items-center">
-            <div className="w-full aspect-square bg-white rounded-xl overflow-hidden mb-4 shadow-sm relative group">
+          <div className="p-3 md:p-6 md:col-span-6 bg-gray-50 flex flex-col items-center">
+            <div className="w-full aspect-square bg-white rounded-lg overflow-hidden mb-3 shadow-sm relative group">
               <img 
                 src={activeImage} 
                 alt={product.title} 
-                className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-400"
               />
             </div>
-            {/* Thumbnails */}
-            <div className="flex gap-4 overflow-x-auto w-full pb-2 scrollbar-hide">
-              {allImages.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImage(img)}
-                  className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                    activeImage === img ? 'border-primary ring-2 ring-primary/20' : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
-                </button>
-              ))}
+            {/* Thumbnails - single row, scroll horizontally if overflow */}
+            <div className="w-full pb-1">
+              <div className="flex gap-2 overflow-x-auto w-full pb-1 scrollbar-hide">
+                {allImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveImage(img)}
+                    className={`relative flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-md overflow-hidden border-2 transition-all ${
+                      activeImage === img ? 'border-primary ring-2 ring-primary/20' : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
           
           {/* Product Info Section */}
-          <div className="p-8 flex flex-col justify-center">
-            <span className="text-sm font-semibold text-primary uppercase tracking-wider mb-2">
+          <div className="p-1.5 md:p-4 md:col-span-6 flex flex-col justify-start gap-1 md:gap-1.5 md:sticky md:top-16">
+            <span className="text-xs md:text-sm font-semibold text-primary uppercase tracking-wider mb-0.5 leading-tight">
               {product.category.replace(/-/g, ' ')}
             </span>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.title}</h1>
+            <h1 className="text-lg md:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 md:leading-relaxed">{product.title}</h1>
             
-            <div className="flex items-center mb-6">
+            <div className="flex items-center mb-1">
                <div className="flex text-yellow-400">
                  {[...Array(5)].map((_, i) => (
-                   <Star key={i} className={`h-5 w-5 ${i < Math.round(product.rating.rate) ? 'fill-current' : 'text-gray-300'}`} />
+                   <Star key={i} className={`h-3 w-3 md:h-4 md:w-4 ${i < Math.round(product.rating.rate) ? 'fill-current' : 'text-gray-300'}`} />
                  ))}
                </div>
-               <span className="ml-2 text-sm text-gray-600">
+               <span className="ml-1.5 text-xs md:text-base text-gray-600 md:leading-relaxed">
                  {product.rating.rate} ({product.rating.count} đánh giá)
                </span>
             </div>
 
-            <p className="text-4xl font-bold text-gray-900 mb-6">
+            <p className="text-lg md:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 md:leading-relaxed">
               {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
             </p>
 
-            <div className="prose prose-sm text-gray-500 mb-8">
+            {/* Description - always visible on mobile for better info density */}
+            <div className="prose prose-xs md:prose-sm text-gray-500 mb-1 leading-snug">
               <p>{product.description}</p>
             </div>
 
             {/* Attributes Selection */}
-            <div className="space-y-6 mb-8">
+            <div className="space-y-1.5 mb-2">
               {product.colors && product.colors.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-2">Màu sắc: <span className="text-gray-500 font-normal">{selectedColor}</span></h3>
-                  <div className="flex flex-wrap gap-2">
+                  <h3 className="text-xs md:text-sm font-medium text-gray-900 mb-0.5 leading-tight">Màu sắc: <span className="text-gray-500 font-normal">{selectedColor}</span></h3>
+                  <div className="flex flex-wrap gap-1.5">
                     {product.colors.map(color => {
                       const colorStock = getStockForColor(color);
                       const isOutOfStock = colorStock === 0;
@@ -370,7 +373,7 @@ const ProductDetailPage: React.FC = () => {
                             }
                           }}
                           disabled={isOutOfStock}
-                          className={`relative px-4 py-2 border rounded-md text-sm font-medium transition-all ${
+                          className={`relative px-2 py-1 md:px-3 md:py-1.5 border rounded text-xs md:text-sm font-medium transition-all ${
                             isOutOfStock 
                               ? 'border-gray-200 text-gray-300 bg-gray-50 cursor-not-allowed line-through'
                               : selectedColor === color
@@ -380,7 +383,7 @@ const ProductDetailPage: React.FC = () => {
                         >
                           {color}
                           {product.variants && product.variants.length > 0 && (
-                            <span className={`ml-2 text-xs ${
+                            <span className={`ml-1 text-xs ${
                               isOutOfStock ? 'text-red-400' : colorStock < 5 ? 'text-amber-500' : 'text-gray-400'
                             }`}>
                               ({isOutOfStock ? 'Hết' : colorStock})
@@ -395,8 +398,8 @@ const ProductDetailPage: React.FC = () => {
 
               {product.sizes && product.sizes.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-2">Kích thước: <span className="text-gray-500 font-normal">{selectedSize}</span></h3>
-                  <div className="flex flex-wrap gap-2">
+                  <h3 className="text-xs md:text-sm font-medium text-gray-900 mb-0.5 leading-tight">Kích thước: <span className="text-gray-500 font-normal">{selectedSize}</span></h3>
+                  <div className="flex flex-wrap gap-1.5">
                     {product.sizes.map(size => {
                       const sizeStock = getStockForSize(size);
                       const isOutOfStock = sizeStock === 0;
@@ -411,7 +414,7 @@ const ProductDetailPage: React.FC = () => {
                             }
                           }}
                           disabled={isOutOfStock}
-                          className={`relative min-w-[3rem] px-3 py-2 border rounded-md text-sm font-medium transition-all ${
+                          className={`relative min-w-[2.5rem] px-2 py-1 md:px-3 md:py-1.5 border rounded text-xs md:text-sm font-medium transition-all ${
                             isOutOfStock
                               ? 'border-gray-200 text-gray-300 bg-gray-50 cursor-not-allowed line-through'
                               : selectedSize === size
@@ -438,8 +441,8 @@ const ProductDetailPage: React.FC = () => {
               {product.attributes && Object.keys(product.attributes).length > 0 && (
                 Object.entries(product.attributes).map(([attrName, values]) => (
                   <div key={attrName}>
-                    <h3 className="text-sm font-medium text-gray-900 mb-2">{attrName}: <span className="text-gray-500 font-normal">{selectedAttributes[attrName]}</span></h3>
-                    <div className="flex flex-wrap gap-2">
+                    <h3 className="text-xs md:text-sm font-medium text-gray-900 mb-0.5 leading-tight">{attrName}: <span className="text-gray-500 font-normal">{selectedAttributes[attrName]}</span></h3>
+                    <div className="flex flex-wrap gap-1.5">
                       {values.map(value => {
                         const attrStock = getStockForAttribute(attrName, value);
                         const isOutOfStock = attrStock === 0;
@@ -454,7 +457,7 @@ const ProductDetailPage: React.FC = () => {
                               }
                             }}
                             disabled={isOutOfStock}
-                            className={`px-4 py-2 border rounded-md text-sm font-medium transition-all ${
+                            className={`px-2 py-1 md:px-3 md:py-1.5 border rounded text-xs md:text-sm font-medium transition-all ${
                               isOutOfStock
                                 ? 'border-gray-200 text-gray-300 bg-gray-50 cursor-not-allowed line-through'
                                 : selectedAttributes[attrName] === value
@@ -464,7 +467,7 @@ const ProductDetailPage: React.FC = () => {
                           >
                             {value}
                             {product.variants && product.variants.length > 0 && (
-                              <span className={`ml-2 text-xs ${
+                              <span className={`ml-1 text-xs ${
                                 isOutOfStock ? 'text-red-400' : attrStock < 5 ? 'text-amber-500' : 'text-gray-400'
                               }`}>
                                 ({isOutOfStock ? 'Hết' : attrStock})
@@ -480,7 +483,7 @@ const ProductDetailPage: React.FC = () => {
             </div>
 
             {error && (
-                <div className="mb-4 text-red-600 text-sm flex items-center bg-red-50 p-3 rounded-lg">
+                <div className="mb-1 text-red-600 text-xs flex items-center bg-red-50 p-1.5 rounded-lg">
                     <div className="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></div>
                     {error}
                 </div>
@@ -491,12 +494,12 @@ const ProductDetailPage: React.FC = () => {
                 <>
                   <button
                     disabled
-                    className="w-full sm:w-auto px-10 py-4 bg-gray-300 text-gray-500 text-lg font-bold rounded-xl cursor-not-allowed flex items-center justify-center"
+                    className="w-full px-4 py-2 bg-gray-300 text-gray-500 text-sm font-bold rounded-lg cursor-not-allowed flex items-center justify-center"
                   >
                     Hết hàng
                   </button>
-                  <div className="mt-6 flex items-center text-sm text-red-700 bg-red-50 p-3 rounded-lg inline-flex">
-                    <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="mt-1.5 flex items-center text-xs text-red-700 bg-red-50 p-1.5 rounded-lg inline-flex">
+                    <svg className="h-3 w-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>Sản phẩm tạm hết hàng - Vui lòng quay lại sau</span>
@@ -505,16 +508,16 @@ const ProductDetailPage: React.FC = () => {
               ) : (
                 <>
                   {/* Quantity Selector */}
-                  <div className="mb-6">
-                    <label className="text-sm font-medium text-gray-900 mb-2 block">Số lượng:</label>
-                    <div className="flex items-center gap-4">
+                  <div className="mb-1.5">
+                    <label className="text-xs md:text-base font-medium text-gray-900 mb-0.5 block md:leading-relaxed">Số lượng:</label>
+                    <div className="flex items-center gap-2">
                       <div className="flex items-center border border-gray-300 rounded-lg shadow-sm">
                         <button 
                           onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                          className="p-3 hover:bg-gray-50 text-gray-600 disabled:opacity-50 transition-colors rounded-l-lg"
+                          className="p-1.5 hover:bg-gray-50 text-gray-600 disabled:opacity-50 transition-colors rounded-l-lg"
                           disabled={quantity <= 1}
                         >
-                          <Minus className="h-4 w-4" />
+                          <Minus className="h-3 w-3 md:h-4 md:w-4" />
                         </button>
                         <input
                           type="number"
@@ -526,19 +529,19 @@ const ProductDetailPage: React.FC = () => {
                             const max = getAvailableStock();
                             setQuantity(Math.min(Math.max(1, val), max));
                           }}
-                          className="w-16 text-center font-medium text-gray-900 border-0 focus:ring-0"
+                          className="w-10 md:w-12 text-center font-medium text-gray-900 border-0 focus:ring-0 text-sm"
                         />
                         <button 
                           onClick={() => setQuantity(q => Math.min(q + 1, getAvailableStock()))}
-                          className="p-3 hover:bg-gray-50 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-r-lg"
+                          className="p-1.5 hover:bg-gray-50 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-r-lg"
                           disabled={quantity >= getAvailableStock()}
                         >
-                          <Plus className="h-4 w-4" />
+                          <Plus className="h-3 w-3 md:h-4 md:w-4" />
                         </button>
                       </div>
                       {getAvailableStock() < 999 && (
-                        <span className={`text-sm ${quantity >= getAvailableStock() ? 'text-amber-600' : 'text-gray-500'}`}>
-                          {quantity >= getAvailableStock() && <AlertTriangle className="inline h-4 w-4 mr-1" />}
+                        <span className={`text-xs md:text-base ${quantity >= getAvailableStock() ? 'text-amber-600' : 'text-gray-500'} md:leading-relaxed`}>
+                          {quantity >= getAvailableStock() && <AlertTriangle className="inline h-3 w-3 md:h-4 md:w-4 mr-1" />}
                           Còn {getAvailableStock()} sản phẩm
                         </span>
                       )}
@@ -548,34 +551,34 @@ const ProductDetailPage: React.FC = () => {
                   <button
                     onClick={handleAddToCartClick}
                     disabled={getAvailableStock() === 0}
-                    className={`w-full sm:w-auto px-10 py-4 text-lg font-bold rounded-xl focus:outline-none focus:ring-4 transition-all shadow-lg flex items-center justify-center transform active:scale-[0.98] ${
+                    className={`w-full px-4 py-2 text-sm font-bold rounded-lg focus:outline-none focus:ring-4 transition-all shadow-lg flex items-center justify-center transform active:scale-[0.98] ${
                       getAvailableStock() === 0 
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-primary text-white hover:bg-emerald-700 focus:ring-emerald-200 hover:shadow-xl'
+                        : 'bg-primary text-white hover:bg-emerald-700 focus:ring-emerald-200 hover:shadow-xl md:py-3 md:text-base'
                     }`}
                   >
                     {getAvailableStock() === 0 ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
                   </button>
-                  <div className={`mt-6 flex items-center text-sm p-3 rounded-lg inline-flex ${
+                  <div className={`mt-1.5 flex items-center text-xs p-1.5 rounded-lg inline-flex ${
                     getAvailableStock() === 0 
                       ? 'text-red-700 bg-red-50'
                       : getAvailableStock() < 10 
                         ? 'text-amber-700 bg-amber-50' 
                         : 'text-green-700 bg-green-50'
-                  }`}>
+                  } md:text-base md:p-3 md:leading-relaxed`}>
                     {getAvailableStock() === 0 ? (
                       <>
-                        <AlertTriangle className="h-5 w-5 mr-2" />
+                        <AlertTriangle className="h-3 w-3 mr-1.5" />
                         <span>Biến thể này đã hết hàng - Vui lòng chọn biến thể khác</span>
                       </>
                     ) : getAvailableStock() < 10 ? (
                       <>
-                        <AlertTriangle className="h-5 w-5 mr-2" />
-                        <span>Chỉ còn {getAvailableStock()} sản phẩm cho biến thể này - Đặt ngay!</span>
+                        <AlertTriangle className="h-3 w-3 mr-1.5" />
+                        <span>Chỉ còn {getAvailableStock()} sản phẩm</span>
                       </>
                     ) : (
                       <>
-                        <CheckCircle className="h-5 w-5 mr-2" />
+                        <CheckCircle className="h-3 w-3 mr-1.5" />
                         <span>Còn {getAvailableStock()} sản phẩm - Giao hàng miễn phí cho đơn từ 1tr</span>
                       </>
                     )}
@@ -588,60 +591,60 @@ const ProductDetailPage: React.FC = () => {
       </div>
 
       {/* Reviews Section */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-12 p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Đánh giá & Bình luận</h2>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mb-4 p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4">Đánh giá & Bình luận</h2>
         
         {/* Fake Review Input */}
-        <div className="mb-8 bg-gray-50 p-6 rounded-xl">
-           <div className="flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-                 <User className="w-6 h-6 text-gray-500"/>
+        <div className="mb-4 bg-gray-50 p-3 md:p-4 rounded-lg">
+           <div className="flex gap-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                 <User className="w-4 h-4 md:w-6 md:h-6 text-gray-500"/>
               </div>
               <div className="flex-1">
                  <textarea 
-                    className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-primary focus:border-primary" 
+                    className="w-full border border-gray-300 rounded p-2 text-xs md:text-sm focus:ring-primary focus:border-primary" 
                     rows={2} 
                     placeholder="Viết đánh giá của bạn..." 
                  ></textarea>
                  <div className="flex justify-between items-center mt-2">
                     <div className="flex text-gray-300 hover:text-yellow-400 cursor-pointer transition-colors">
-                        {[1,2,3,4,5].map(s => <Star key={s} className="w-5 h-5" />)}
+                        {[1,2,3,4,5].map(s => <Star key={s} className="w-4 h-4 md:w-5 md:h-5" />)}
                     </div>
-                    <button className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-emerald-700 flex items-center">
-                       Gửi đánh giá <Send className="w-3 h-3 ml-2"/>
+                    <button className="px-3 py-1.5 md:px-4 md:py-2 bg-primary text-white text-xs md:text-sm font-medium rounded-lg hover:bg-emerald-700 flex items-center">
+                       Gửi đánh giá <Send className="w-3 h-3 ml-1 md:ml-2"/>
                     </button>
                  </div>
               </div>
            </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-3 md:space-y-4">
            {product.reviews && product.reviews.length > 0 ? (
               product.reviews.map(review => (
-                 <div key={review.id} className="border-b border-gray-100 last:border-0 pb-6 last:pb-0">
-                    <div className="flex items-center mb-2">
-                       <span className="font-bold text-gray-900 mr-2">{review.user}</span>
-                       <span className="text-sm text-gray-500">{review.date}</span>
+                 <div key={review.id} className="border-b border-gray-100 last:border-0 pb-3 last:pb-0">
+                    <div className="flex items-center mb-1">
+                       <span className="font-bold text-gray-900 text-sm md:text-base mr-2">{review.user}</span>
+                       <span className="text-xs text-gray-500">{review.date}</span>
                     </div>
-                    <div className="flex text-yellow-400 mb-2">
+                    <div className="flex text-yellow-400 mb-1">
                        {[...Array(5)].map((_, i) => (
-                           <Star key={i} className={`h-4 w-4 ${i < review.rating ? 'fill-current' : 'text-gray-300'}`} />
+                           <Star key={i} className={`h-3 w-3 md:h-4 md:w-4 ${i < review.rating ? 'fill-current' : 'text-gray-300'}`} />
                        ))}
                     </div>
-                    <p className="text-gray-700">{review.comment}</p>
+                    <p className="text-gray-700 text-sm">{review.comment}</p>
                  </div>
               ))
            ) : (
-             <p className="text-gray-500 italic text-center">Chưa có đánh giá nào cho sản phẩm này.</p>
+             <p className="text-gray-500 italic text-center text-sm">Chưa có đánh giá nào cho sản phẩm này.</p>
            )}
         </div>
       </div>
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Sản phẩm liên quan</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="mb-4">
+          <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4">Sản phẩm liên quan</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
             {relatedProducts.map(related => (
               <ProductCard
                 key={related.id}

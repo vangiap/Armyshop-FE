@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShoppingBag, Star } from 'lucide-react';
 import { Product } from '../types';
+import { getImageUrl } from '../utils/imageUrl';
 
 interface ProductCardProps {
   product: Product;
@@ -25,7 +26,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     <div className={`group relative bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full ${isOutOfStock ? 'opacity-75' : ''}`}>
       <div className="relative aspect-square overflow-hidden cursor-pointer bg-gray-100" onClick={() => onClick(product.id)}>
         <img
-          src={product.image}
+          src={getImageUrl(product.image) || '/placeholder-product.jpg'}
           alt={product.title}
           className={`object-cover w-full h-full object-center group-hover:scale-105 transition-transform duration-300 ${isOutOfStock ? 'grayscale' : ''}`}
           loading="lazy"

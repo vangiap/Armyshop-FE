@@ -38,7 +38,7 @@ const BlogPage: React.FC = () => {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">Blog & Tin Tức</h1>
         <p className="text-gray-500 max-w-2xl mx-auto">
-          Cập nhật những xu hướng mới nhất, bí quyết mua sắm và câu chuyện thú vị từ VietShop.
+          Cập nhật những xu hướng mới nhất, bí quyết mua sắm và câu chuyện thú vị từ ArmyShop.
         </p>
       </div>
 

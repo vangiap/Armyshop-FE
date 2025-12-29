@@ -45,6 +45,7 @@ export interface Product {
   sku?: string;
   is_active?: boolean;
   is_visible?: boolean;
+  featured?: boolean; // Flag for featured products
 }
 
 export interface CartItem extends Product {

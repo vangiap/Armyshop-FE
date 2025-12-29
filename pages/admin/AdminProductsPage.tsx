@@ -80,7 +80,10 @@ const AdminProductsPage: React.FC = () => {
     <div>
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Quản lý sản phẩm</h1>
-        <button className="bg-primary text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-emerald-700 transition-colors">
+        <button 
+          onClick={() => navigate('/admin/products/create')}
+          className="bg-primary text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-emerald-700 transition-colors"
+        >
           <Plus className="w-5 h-5 mr-2" /> Thêm sản phẩm
         </button>
       </div>
@@ -141,7 +144,10 @@ const AdminProductsPage: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end space-x-2">
-                        <button className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors">
+                        <button 
+                          onClick={() => navigate(`/admin/products/${product.id}`)}
+                          className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                        >
                             <Edit2 className="w-4 h-4" />
                         </button>
                         <button 

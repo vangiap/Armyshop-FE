@@ -34,6 +34,7 @@ export const publicApi = {
     q?: string;
     per_page?: number;
     page?: number;
+    featured?: boolean;
   }): Promise<{ data: Product[]; meta: PaginatedResponse }> => {
     const searchParams = new URLSearchParams();
     if (params?.category) searchParams.append('category', params.category);
@@ -41,6 +42,7 @@ export const publicApi = {
     if (params?.q) searchParams.append('q', params.q);
     if (params?.per_page) searchParams.append('per_page', params.per_page.toString());
     if (params?.page) searchParams.append('page', params.page.toString());
+    if (params?.featured !== undefined) searchParams.append('featured', params.featured.toString());
     
     const url = `${API_URL}/api/products${searchParams.toString() ? '?' + searchParams.toString() : ''}`;
     const res = await fetch(url, { headers: getHeaders() });
@@ -119,8 +121,44 @@ export const publicApi = {
     overlay_color?: string;
     overlay_opacity: number;
   }[]> => {
-    const res = await fetch(`${API_URL}/api/banners?position=hero-slider`, { headers: getHeaders() });
-    return handleResponse(res);
+    // Try multiple possible banner position keys in parallel so we don't
+    // wait for each failing endpoint sequentially (reduces startup latency).
+    const positions = ['hero-slider', 'slider', 'home-slider', 'homepage', 'hero'];
+
+    try {
+      const fetchPromises = positions.map(pos =>
+        fetch(`${API_URL}/api/banners?position=${pos}`, { headers: getHeaders() })
+          .then(res => res.ok ? res.json().catch(() => ({})) : null)
+          .catch(() => null)
+      );
+
+      const results = await Promise.all(fetchPromises);
+
+      for (const json of results) {
+        const data = json?.data ?? [];
+        if (Array.isArray(data) && data.length > 0) return data;
+      }
+    } catch (e) {
+      // ignore and try fallback
+    }
+
+    // Final fallback: fetch all banners once and pick hero-like positions.
+    try {
+      const allRes = await fetch(`${API_URL}/api/banners`, { headers: getHeaders() });
+      if (allRes.ok) {
+        const allJson = await allRes.json().catch(() => ({}));
+        const allData = allJson.data ?? [];
+        const heroLike = (allData || []).filter((b: any) => {
+          const pos = (b.position || '').toString().toLowerCase();
+          return /hero|home|slider|homepage|main/.test(pos);
+        });
+        if (heroLike.length > 0) return heroLike;
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    return [];
   },
 
   getPromoBanners: async (): Promise<{

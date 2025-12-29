@@ -1,8 +1,16 @@
 import React from 'react';
 import Breadcrumbs from '../components/common/Breadcrumbs';
 import { MapPin, Phone, Mail } from 'lucide-react';
+import { useSettings } from '../context/SettingsContext';
 
 const ContactPage: React.FC = () => {
+  const { settings } = useSettings();
+
+  const address = settings.contact_address || '123 Đường ABC, Quận 1, TP. Hồ Chí Minh';
+  const phone = settings.contact_phone || '1900 1234';
+  const email = settings.contact_email || 'hotro@ArmyShop.com';
+  const working = settings.contact_working_hours || 'Thứ 2 - CN: 8:00 - 21:00';
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Breadcrumbs items={[{ label: 'Liên hệ' }]} />
@@ -18,7 +26,7 @@ const ContactPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="font-bold text-gray-900 text-lg">Địa chỉ</h3>
-                <p className="text-gray-600">123 Đường ABC, Quận 1, TP. Hồ Chí Minh</p>
+                <p className="text-gray-600">{address}</p>
               </div>
             </div>
 
@@ -28,8 +36,8 @@ const ContactPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="font-bold text-gray-900 text-lg">Điện thoại</h3>
-                <p className="text-gray-600">1900 1234</p>
-                <p className="text-sm text-gray-500">Thứ 2 - CN: 8:00 - 21:00</p>
+                <p className="text-gray-600"><a href={`tel:${phone}`} className="hover:underline">{phone}</a></p>
+                <p className="text-sm text-gray-500">{working}</p>
               </div>
             </div>
 
@@ -39,7 +47,7 @@ const ContactPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="font-bold text-gray-900 text-lg">Email</h3>
-                <p className="text-gray-600">hotro@vietshop.com</p>
+                <p className="text-gray-600"><a href={`mailto:${email}`} className="hover:underline">{email}</a></p>
               </div>
             </div>
           </div>

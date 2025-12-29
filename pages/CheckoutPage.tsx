@@ -110,7 +110,7 @@ const CheckoutPage: React.FC = () => {
         </div>
         <h2 className="text-3xl font-bold text-gray-900 mb-4">Đặt hàng thành công!</h2>
         <p className="text-gray-600 mb-8">
-          Cảm ơn bạn đã mua sắm tại VietShop. Mã đơn hàng của bạn là <span className="font-mono font-bold text-gray-900">#{orderNumber}</span>.
+          Cảm ơn bạn đã mua sắm tại ArmyShop. Mã đơn hàng của bạn là <span className="font-mono font-bold text-gray-900">#{orderNumber}</span>.
           {paymentMethod === 'bank_transfer' 
             ? " Chúng tôi sẽ kiểm tra giao dịch và liên hệ xác nhận sớm nhất." 
             : " Chúng tôi sẽ liên hệ với bạn sớm để xác nhận đơn hàng."}
@@ -340,7 +340,7 @@ const CheckoutPage: React.FC = () => {
                             <div className="inline-block p-2 bg-white rounded shadow-sm border border-gray-100">
                                 {/* Using a placeholder QR service for demo */}
                                 <img 
-                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=VIETSHOP_ORDER_${total}`} 
+                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ArmyShop_ORDER_${total}`} 
                                     alt="Payment QR Code" 
                                     className="w-32 h-32 md:w-40 md:h-40 mx-auto"
                                 />
